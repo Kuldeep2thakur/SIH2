@@ -9,11 +9,15 @@ import ErrorMessage from '../components/ErrorMessage';
 const SearchPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [results, setResults] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [suggestionsLoading, setSuggestionsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [hasSearched, setHasSearched] = useState(false);
     const navigate = useNavigate();
     const resultsRef = useRef(null);
+    const searchContainerRef = useRef(null);
 
     useEffect(() => {
         if (results.length > 0 && resultsRef.current) {
@@ -24,6 +28,53 @@ const SearchPage = () => {
             );
         }
     }, [results]);
+
+    // Handle click outside to close suggestions
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+                setShowSuggestions(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    // Debounced search for suggestions
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(async () => {
+            if (searchTerm.trim().length >= 2) {
+                setSuggestionsLoading(true);
+                try {
+                    const url = `https://symbiomed.onrender.com/fhir/ValueSet/$expand?url=http://sih.gov.in/fhir/ValueSet/namaste-ayurveda&filter=${encodeURIComponent(searchTerm)}`;
+                    const response = await fetch(url);
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.expansion && data.expansion.contains) {
+                            setSuggestions(data.expansion.contains.slice(0, 5)); // Limit to 5 suggestions
+                            setShowSuggestions(true);
+                        } else {
+                            setSuggestions([]);
+                            setShowSuggestions(false);
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error fetching suggestions:", error);
+                    setSuggestions([]);
+                } finally {
+                    setSuggestionsLoading(false);
+                }
+            } else {
+                setSuggestions([]);
+                setShowSuggestions(false);
+            }
+        }, 300);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [searchTerm]);
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -58,15 +109,17 @@ const SearchPage = () => {
     };
 
     const handleTermClick = (code) => {
-        navigate(`/mapping/${code}`);
+        // URL encode the code to handle special characters
+        navigate(`/mapping/${encodeURIComponent(code)}`);
     };
 
     return (
         <div className="page-container">
             {/* Hero Section */}
             <div className="text-center mb-12">
-                <h1 className="section-title text-gradient">
-                    🔍 Unified Terminology Search
+
+                <h1 className="section-title text-gradient mb-4">
+                    Unified Search
                 </h1>
                 <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
                     Search for NAMASTE and Ayurveda medical terms. Click any term to view its mapping to international standards.
@@ -78,18 +131,58 @@ const SearchPage = () => {
                 <ApiCard
                     title="Search NAMASTE / Ayurveda Terms"
                     description="Enter a term or keyword to search the NAMASTE Ayurveda terminology system. The search will return matching codes and their display names."
-                    icon="🔎"
                 >
                     <form onSubmit={handleSearch} className="space-y-4">
-                        <div>
+                        <div className="relative" ref={searchContainerRef}>
                             <input
                                 type="text"
                                 value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
+                                onChange={(e) => {
+                                    setSearchTerm(e.target.value);
+                                    if (e.target.value.trim().length === 0) {
+                                        setShowSuggestions(false);
+                                    }
+                                }}
+                                onFocus={() => {
+                                    if (suggestions.length > 0) setShowSuggestions(true);
+                                }}
                                 placeholder="Type a medical term (e.g., 'dosha', 'vata', 'pitta')..."
-                                className="input-field"
+                                className="input-field w-full"
                                 autoFocus
+                                autoComplete="off"
                             />
+
+                            {/* Autocomplete Dropdown */}
+                            {showSuggestions && (
+                                <div className="absolute z-10 w-full bg-white mt-1 rounded-xl shadow-xl border border-slate-200 overflow-hidden max-h-60 overflow-y-auto">
+                                    {suggestionsLoading ? (
+                                        <div className="p-4 text-center text-slate-500 text-sm">
+                                            Loading suggestions...
+                                        </div>
+                                    ) : suggestions.length > 0 ? (
+                                        <ul>
+                                            {suggestions.map((suggestion, index) => (
+                                                <li
+                                                    key={index}
+                                                    onClick={() => {
+                                                        setSearchTerm(suggestion.display || suggestion.code);
+                                                        setShowSuggestions(false);
+                                                        handleTermClick(suggestion.code);
+                                                    }}
+                                                    className="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-slate-100 last:border-0 transition-colors duration-150"
+                                                >
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="font-medium text-slate-700">{suggestion.display}</span>
+                                                        <span className="text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded-full font-mono">
+                                                            {suggestion.code}
+                                                        </span>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : null}
+                                </div>
+                            )}
                         </div>
                         <button
                             type="submit"
@@ -102,17 +195,17 @@ const SearchPage = () => {
                                     Searching...
                                 </span>
                             ) : (
-                                '🔍 Search Terminology'
+                                'Search Terminology'
                             )}
                         </button>
                     </form>
 
                     {/* API Info */}
-                    <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                        <p className="text-sm text-blue-800 font-mono">
+                    <div className="mt-6 p-4 bg-teal-50 rounded-lg border border-teal-200">
+                        <p className="text-sm text-teal-800 font-mono">
                             <strong>Endpoint:</strong> GET /fhir/ValueSet/$expand
                         </p>
-                        <p className="text-sm text-blue-700 mt-1">
+                        <p className="text-sm text-teal-700 mt-1">
                             This operation expands the ValueSet and filters results based on your search term.
                         </p>
                     </div>
@@ -126,7 +219,11 @@ const SearchPage = () => {
 
             {!loading && hasSearched && results.length === 0 && !error && (
                 <div className="text-center py-12">
-                    <div className="text-6xl mb-4">🔍</div>
+                    <div className="text-center">
+                        <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl flex items-center justify-center">
+                            <div className="w-10 h-10 border-4 border-slate-400 border-dashed rounded-full"></div>
+                        </div>
+                    </div>
                     <h3 className="text-2xl font-bold text-slate-700 mb-2">No Results Found</h3>
                     <p className="text-slate-600">Try a different search term or keyword.</p>
                 </div>

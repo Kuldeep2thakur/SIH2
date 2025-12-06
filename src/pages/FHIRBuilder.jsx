@@ -12,6 +12,9 @@ const FHIRBuilder = () => {
     const [formData, setFormData] = useState({
         ayushCode: passedData.code || '',
         ayushSystem: 'http://sih.gov.in/fhir/CodeSystem/namaste-ayurveda',
+        icdCode: passedData.selectedMapping?.code || '',
+        icdSystem: 'http://id.who.int/icd/entity',
+        icdDisplay: passedData.selectedMapping?.display || '',
         clinicalStatus: 'active',
         verificationStatus: 'confirmed',
         encounterClass: 'AMB',
@@ -41,6 +44,9 @@ const FHIRBuilder = () => {
             const payload = {
                 ayushCode: formData.ayushCode,
                 ayushSystem: formData.ayushSystem,
+                icdCode: formData.icdCode,
+                icdSystem: formData.icdSystem,
+                icdDisplay: formData.icdDisplay,
                 clinicalStatus: formData.clinicalStatus,
                 verificationStatus: formData.verificationStatus,
                 encounterClass: formData.encounterClass,
@@ -107,7 +113,7 @@ const FHIRBuilder = () => {
             {/* Header */}
             <div className="mb-8">
                 <h1 className="section-title text-gradient">
-                    📝 FHIR Condition Builder
+                    FHIR Condition Builder
                 </h1>
                 <p className="text-xl text-slate-600 leading-relaxed">
                     Create a FHIR Condition resource (Problem List Entry) with AYUSH terminology
@@ -120,7 +126,6 @@ const FHIRBuilder = () => {
                     <ApiCard
                         title="Problem List Entry Form"
                         description="Fill in the details to create a FHIR Condition resource"
-                        icon="📋"
                     >
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
@@ -151,6 +156,43 @@ const FHIRBuilder = () => {
                                     className="input-field"
                                 />
                             </div>
+
+                            {/* ICD-11 TM2 Code Section */}
+                            {formData.icdCode && (
+                                <div className="bg-gradient-to-r from-teal-50 to-cyan-50 p-4 rounded-xl border-2 border-teal-200">
+                                    <h4 className="text-sm font-bold text-teal-800 mb-3">Selected ICD-11 TM2 Mapping</h4>
+
+                                    <div className="space-y-3">
+                                        <div>
+                                            <label className="block text-xs font-semibold text-teal-700 mb-1">
+                                                ICD-11 TM2 Code
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="icdCode"
+                                                value={formData.icdCode}
+                                                onChange={handleChange}
+                                                className="input-field bg-white"
+                                                readOnly
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-semibold text-teal-700 mb-1">
+                                                ICD Display Name
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="icdDisplay"
+                                                value={formData.icdDisplay}
+                                                onChange={handleChange}
+                                                className="input-field bg-white"
+                                                readOnly
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">
@@ -236,7 +278,7 @@ const FHIRBuilder = () => {
                                         Creating...
                                     </span>
                                 ) : (
-                                    '📤 Create FHIR Condition'
+                                    'Create FHIR Condition'
                                 )}
                             </button>
 
@@ -252,17 +294,17 @@ const FHIRBuilder = () => {
                                         Validating...
                                     </span>
                                 ) : (
-                                    '✓ Validate Dual Coding'
+                                    'Validate Dual Coding'
                                 )}
                             </button>
                         </form>
 
-                        <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                            <p className="text-sm text-blue-800 font-mono mb-1">
+                        <div className="mt-6 p-4 bg-teal-50 rounded-lg border border-teal-200">
+                            <p className="text-sm text-teal-800 font-mono mb-1">
                                 <strong>Endpoints:</strong>
                             </p>
-                            <p className="text-xs text-blue-700 font-mono">POST /fhir/ingest/problem-list</p>
-                            <p className="text-xs text-blue-700 font-mono">POST /fhir/validate/dual-code</p>
+                            <p className="text-xs text-teal-700 font-mono">POST /fhir/ingest/problem-list</p>
+                            <p className="text-xs text-teal-700 font-mono">POST /fhir/validate/dual-code</p>
                         </div>
                     </ApiCard>
                 </div>
@@ -273,13 +315,12 @@ const FHIRBuilder = () => {
 
                     {response && (
                         <ApiCard
-                            title="✅ FHIR Condition Created"
+                            title="FHIR Condition Created"
                             description="Successfully created FHIR Condition resource"
-                            icon="✅"
                         >
                             <div className="bg-green-50 p-4 rounded-xl border-2 border-green-200 mb-4">
                                 <p className="text-green-800 font-semibold text-lg">
-                                    ✓ Resource created successfully!
+                                    Resource created successfully!
                                 </p>
                             </div>
                             <pre className="code-block max-h-96 overflow-y-auto">
@@ -290,17 +331,16 @@ const FHIRBuilder = () => {
 
                     {validationResponse && (
                         <ApiCard
-                            title="✅ Dual Coding Validation"
+                            title="Dual Coding Validation"
                             description="Validation result from the server"
-                            icon="✓"
                         >
                             <div className={`p-4 rounded-xl border-2 mb-4 ${validationResponse.isValid
-                                    ? 'bg-green-50 border-green-200'
-                                    : 'bg-red-50 border-red-200'
+                                ? 'bg-green-50 border-green-200'
+                                : 'bg-red-50 border-red-200'
                                 }`}>
                                 <p className={`font-semibold text-lg ${validationResponse.isValid ? 'text-green-800' : 'text-red-800'
                                     }`}>
-                                    {validationResponse.isValid ? '✓ Valid dual coding' : '✗ Invalid dual coding'}
+                                    {validationResponse.isValid ? 'Valid dual coding' : 'Invalid dual coding'}
                                 </p>
                             </div>
                             <pre className="code-block max-h-96 overflow-y-auto">
@@ -311,7 +351,9 @@ const FHIRBuilder = () => {
 
                     {!response && !validationResponse && !error && (
                         <div className="card p-8 text-center">
-                            <div className="text-6xl mb-4">📝</div>
+                            <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl flex items-center justify-center">
+                                <div className="w-10 h-10 border-4 border-teal-300 border-dashed rounded-lg"></div>
+                            </div>
                             <h3 className="text-xl font-bold text-slate-700 mb-2">
                                 Ready to Create
                             </h3>
@@ -326,22 +368,22 @@ const FHIRBuilder = () => {
             {/* Info Section */}
             <div className="mt-12 max-w-4xl mx-auto">
                 <div className="glass-card p-8">
-                    <h3 className="text-2xl font-bold text-slate-800 mb-4">💡 About Problem List Entries</h3>
+                    <h3 className="text-2xl font-bold text-slate-800 mb-4">About Problem List Entries</h3>
                     <div className="space-y-3 text-slate-700">
                         <p className="flex items-start">
-                            <span className="text-primary-600 font-bold mr-3 text-xl">•</span>
+                            <span className="text-teal-600 font-bold mr-3 text-xl">•</span>
                             <span><strong>Problem List Entry:</strong> A FHIR Condition resource that represents a clinical problem or diagnosis recorded in a patient's medical record.</span>
                         </p>
                         <p className="flex items-start">
-                            <span className="text-primary-600 font-bold mr-3 text-xl">•</span>
+                            <span className="text-teal-600 font-bold mr-3 text-xl">•</span>
                             <span><strong>Dual Coding:</strong> Using both traditional AYUSH terminology and international codes (ICD-11) for interoperability.</span>
                         </p>
                         <p className="flex items-start">
-                            <span className="text-primary-600 font-bold mr-3 text-xl">•</span>
+                            <span className="text-teal-600 font-bold mr-3 text-xl">•</span>
                             <span><strong>Clinical Status:</strong> Indicates whether the condition is currently active or has been resolved.</span>
                         </p>
                         <p className="flex items-start">
-                            <span className="text-primary-600 font-bold mr-3 text-xl">•</span>
+                            <span className="text-teal-600 font-bold mr-3 text-xl">•</span>
                             <span><strong>Verification Status:</strong> The verification/validation status to support diagnostic accuracy.</span>
                         </p>
                     </div>

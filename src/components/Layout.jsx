@@ -18,32 +18,35 @@ const Layout = ({ children }) => {
     }, [location]);
 
     const navItems = [
-        { path: '/', label: 'Unified Search', icon: '🔍' },
-        { path: '/fhir-builder', label: 'FHIR Builder', icon: '📝' },
-        { path: '/api-playground', label: 'API Playground', icon: '🧪' },
+        { path: '/', label: 'Unified Search' },
+        { path: '/fhir-builder', label: 'FHIR Builder' },
+        { path: '/api-playground', label: 'API Playground' },
     ];
 
     return (
-        <div className="min-h-screen flex flex-col bg-slate-50">
-            {/* Navbar */}
-            <nav className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-white to-blue-50">
+            {/* Premium Navbar with Gradient */}
+            <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/50 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-20">
                         {/* Logo Section */}
                         <div className="flex items-center">
-                            <Link to="/" className="flex items-center space-x-3 group">
-                                <div className="bg-white p-2 rounded-xl shadow-lg group-hover:scale-105 transition-transform duration-200 overflow-hidden">
-                                    <img
-                                        src="/WhatsApp Image 2025-09-23 at 15.12.01_7162a348.jpg"
-                                        alt="SymbioMed Logo"
-                                        className="w-12 h-12 object-contain"
-                                    />
+                            <Link to="/" className="flex items-center space-x-4 group">
+                                <div className="relative">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-2xl opacity-20 group-hover:opacity-30 transition-opacity blur"></div>
+                                    <div className="relative bg-gradient-to-br from-teal-50 to-cyan-50 p-2.5 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300 border border-teal-200/50">
+                                        <img
+                                            src="/WhatsApp Image 2025-09-23 at 15.12.01_7162a348.jpg"
+                                            alt="SymbioMed Logo"
+                                            className="w-11 h-11 object-contain"
+                                        />
+                                    </div>
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-2xl font-bold text-slate-800 font-display tracking-tight">
+                                    <span className="text-2xl font-bold bg-gradient-to-r from-slate-800 via-slate-700 to-blue-900 bg-clip-text text-transparent font-display tracking-tight">
                                         SYMBIOMED
                                     </span>
-                                    <span className="text-[0.65rem] uppercase tracking-wider font-bold text-blue-600">
+                                    <span className="text-[0.65rem] uppercase tracking-wider font-semibold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
                                         Terminology Service
                                     </span>
                                 </div>
@@ -51,22 +54,22 @@ const Layout = ({ children }) => {
                         </div>
 
                         {/* Desktop Navigation */}
-                        <div className="hidden md:flex items-center space-x-1">
+                        <div className="hidden md:flex items-center space-x-2">
                             {navItems.map((item) => {
                                 const isActive = location.pathname === item.path;
                                 return (
                                     <Link
                                         key={item.path}
                                         to={item.path}
-                                        className={`relative px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-200 ${isActive
-                                            ? 'text-blue-700 bg-blue-50'
-                                            : 'text-slate-700 hover:text-blue-600 hover:bg-slate-50'
+                                        className={`relative px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${isActive
+                                            ? 'bg-gradient-to-br from-teal-500 to-teal-600 text-white shadow-md shadow-teal-500/25'
+                                            : 'text-slate-700 hover:bg-teal-50 hover:text-teal-700'
                                             }`}
                                     >
-                                        <span className="flex items-center space-x-2">
-                                            <span>{item.icon}</span>
-                                            <span>{item.label}</span>
-                                        </span>
+                                        {item.label}
+                                        {isActive && (
+                                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-0.5 bg-white rounded-full"></div>
+                                        )}
                                     </Link>
                                 );
                             })}
@@ -76,13 +79,13 @@ const Layout = ({ children }) => {
                         <div className="flex items-center md:hidden">
                             <button
                                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                                className="p-2 rounded-lg text-slate-700 hover:bg-slate-100 focus:outline-none"
+                                className="p-2.5 rounded-xl text-slate-700 hover:bg-teal-50 hover:text-teal-700 focus:outline-none transition-all duration-200"
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     {isMobileMenuOpen ? (
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                                     ) : (
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
                                     )}
                                 </svg>
                             </button>
@@ -92,23 +95,20 @@ const Layout = ({ children }) => {
 
                 {/* Mobile Menu */}
                 {isMobileMenuOpen && (
-                    <div className="md:hidden bg-white border-t border-slate-200 shadow-lg absolute w-full left-0 z-50">
-                        <div className="px-4 pt-2 pb-4 space-y-1">
+                    <div className="md:hidden bg-white/95 backdrop-blur-xl border-t border-slate-200/50 shadow-lg">
+                        <div className="px-4 pt-2 pb-4 space-y-2">
                             {navItems.map((item) => {
                                 const isActive = location.pathname === item.path;
                                 return (
                                     <Link
                                         key={item.path}
                                         to={item.path}
-                                        className={`block px-4 py-3 rounded-xl text-base font-bold transition-all duration-200 ${isActive
-                                            ? 'bg-blue-50 text-blue-700 border border-blue-100'
-                                            : 'text-slate-700 hover:bg-slate-50 hover:text-blue-600'
+                                        className={`block px-5 py-3.5 rounded-xl text-base font-semibold transition-all duration-200 ${isActive
+                                            ? 'bg-gradient-to-br from-teal-500 to-teal-600 text-white shadow-md shadow-teal-500/25'
+                                            : 'text-slate-700 hover:bg-teal-50 hover:text-teal-700'
                                             }`}
                                     >
-                                        <span className="flex items-center space-x-3">
-                                            <span className="text-xl">{item.icon}</span>
-                                            <span>{item.label}</span>
-                                        </span>
+                                        {item.label}
                                     </Link>
                                 );
                             })}
@@ -121,28 +121,6 @@ const Layout = ({ children }) => {
             <main className="flex-1 page-content relative">
                 {children}
             </main>
-
-            {/* Footer */}
-            <footer className="bg-white border-t border-slate-200 mt-auto">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-                        <div className="flex items-center space-x-3">
-                            <div className="bg-slate-100 p-2 rounded-lg">
-                                <span className="text-xl">🏥</span>
-                            </div>
-                            <div className="text-center md:text-left">
-                                <p className="text-sm font-bold text-slate-900">SymbioMed Terminology Service</p>
-                                <p className="text-xs text-slate-500">Smart India Hackathon 2024 Solution</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center space-x-6 text-sm text-slate-500">
-                            <span className="hover:text-blue-600 cursor-pointer transition-colors">Documentation</span>
-                            <span className="hover:text-blue-600 cursor-pointer transition-colors">API Status</span>
-                            <span className="hover:text-blue-600 cursor-pointer transition-colors">Support</span>
-                        </div>
-                    </div>
-                </div>
-            </footer>
         </div>
     );
 };

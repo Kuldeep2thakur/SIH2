@@ -173,10 +173,10 @@ const APIPlayground = () => {
     };
 
     const tabs = [
-        { id: 'lookup', label: '$lookup', icon: '🔍' },
-        { id: 'translate', label: '$translate', icon: '🔗' },
-        { id: 'validate', label: '$validate-code', icon: '✓' },
-        { id: 'bundle', label: 'Bundle', icon: '📦' },
+        { id: 'lookup', label: '$lookup' },
+        { id: 'translate', label: '$translate' },
+        { id: 'validate', label: '$validate-code' },
+        { id: 'bundle', label: 'Bundle' },
     ];
 
     return (
@@ -184,7 +184,7 @@ const APIPlayground = () => {
             {/* Header */}
             <div className="mb-8">
                 <h1 className="section-title text-gradient">
-                    🧪 API Playground
+                    API Playground
                 </h1>
                 <p className="text-xl text-slate-600 leading-relaxed">
                     Test all SymbioMed API endpoints interactively
@@ -202,11 +202,10 @@ const APIPlayground = () => {
                             setResponse(null);
                         }}
                         className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${activeTab === tab.id
-                            ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg'
-                            : 'bg-white text-slate-700 hover:bg-slate-50 border-2 border-slate-200'
+                            ? 'bg-gradient-to-br from-teal-500 to-teal-600 text-white shadow-md shadow-teal-500/25'
+                            : 'bg-white text-slate-700 hover:bg-teal-50 border-2 border-slate-200'
                             }`}
                     >
-                        <span className="mr-2">{tab.icon}</span>
                         {tab.label}
                     </button>
                 ))}
@@ -219,7 +218,6 @@ const APIPlayground = () => {
                         <ApiCard
                             title="CodeSystem $lookup"
                             description="Look up a code in a code system to retrieve its details"
-                            icon="🔍"
                         >
                             <div className="space-y-4">
                                 <div>
@@ -251,9 +249,9 @@ const APIPlayground = () => {
                                     disabled={loading || !lookupCode}
                                     className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {loading ? 'Loading...' : '🔍 Lookup Code'}
+                                    {loading ? 'Loading...' : 'Lookup Code'}
                                 </button>
-                                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200 text-xs font-mono text-blue-800">
+                                <div className="p-3 bg-teal-50 rounded-lg border border-teal-200 text-xs font-mono text-teal-800">
                                     GET /fhir/CodeSystem/$lookup
                                 </div>
                             </div>
@@ -264,7 +262,6 @@ const APIPlayground = () => {
                         <ApiCard
                             title="ConceptMap $translate"
                             description="Translate a code from one system to another using a ConceptMap"
-                            icon="🔗"
                         >
                             <div className="space-y-4">
                                 <div>
@@ -290,9 +287,9 @@ const APIPlayground = () => {
                                     disabled={loading || !translateCode}
                                     className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {loading ? 'Loading...' : '🔗 Translate Code'}
+                                    {loading ? 'Loading...' : 'Translate Code'}
                                 </button>
-                                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200 text-xs font-mono text-blue-800">
+                                <div className="p-3 bg-teal-50 rounded-lg border border-teal-200 text-xs font-mono text-teal-800">
                                     GET /fhir/ConceptMap/$translate
                                 </div>
                             </div>
@@ -303,7 +300,6 @@ const APIPlayground = () => {
                         <ApiCard
                             title="ValueSet $validate-code"
                             description="Validate whether a code is in a value set"
-                            icon="✓"
                         >
                             <div className="space-y-4">
                                 <div>
@@ -356,7 +352,7 @@ const APIPlayground = () => {
                                         {loading ? 'Loading...' : 'POST Request'}
                                     </button>
                                 </div>
-                                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200 text-xs font-mono text-blue-800">
+                                <div className="p-3 bg-teal-50 rounded-lg border border-teal-200 text-xs font-mono text-teal-800">
                                     GET/POST /fhir/ValueSet/$validate-code
                                 </div>
                             </div>
@@ -367,7 +363,6 @@ const APIPlayground = () => {
                         <ApiCard
                             title="FHIR Bundle Operations"
                             description="Retrieve or upload FHIR bundles"
-                            icon="📦"
                         >
                             <div className="space-y-4">
                                 <button
@@ -375,7 +370,7 @@ const APIPlayground = () => {
                                     disabled={loading}
                                     className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {loading ? 'Loading...' : '📥 Get Bundle'}
+                                    {loading ? 'Loading...' : 'Get Bundle'}
                                 </button>
 
                                 <div className="border-t-2 border-slate-200 pt-4">
@@ -394,11 +389,11 @@ const APIPlayground = () => {
                                         disabled={loading || !bundleJson}
                                         className="btn-secondary w-full mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        {loading ? 'Uploading...' : '📤 Upload Bundle'}
+                                        {loading ? 'Uploading...' : 'Upload Bundle'}
                                     </button>
                                 </div>
 
-                                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200 text-xs font-mono text-blue-800">
+                                <div className="p-3 bg-teal-50 rounded-lg border border-teal-200 text-xs font-mono text-teal-800">
                                     GET /fhir/bundle<br />
                                     POST /fhir/bundle/upload
                                 </div>
@@ -412,7 +407,6 @@ const APIPlayground = () => {
                     <ApiCard
                         title="API Response"
                         description="JSON response from the server"
-                        icon="📄"
                     >
                         {loading && <Loading message="Calling API..." />}
 
@@ -431,7 +425,9 @@ const APIPlayground = () => {
 
                         {!loading && !error && !response && (
                             <div className="text-center py-12">
-                                <div className="text-6xl mb-4">🧪</div>
+                                <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-teal-50 to-cyan-50 rounded-2xl flex items-center justify-center">
+                                    <div className="w-10 h-10 border-4 border-teal-300 border-dashed rounded-lg"></div>
+                                </div>
                                 <p className="text-slate-600">
                                     Select an endpoint and make a request to see the response here
                                 </p>
@@ -444,9 +440,8 @@ const APIPlayground = () => {
             {/* Health Check */}
             <div className="mt-8 max-w-4xl mx-auto">
                 <ApiCard
-                    title="🏥 Health Check"
+                    title="Health Check"
                     description="Check if the API server is running"
-                    icon="❤️"
                 >
                     <button
                         onClick={async () => {
@@ -464,7 +459,7 @@ const APIPlayground = () => {
                         }}
                         className="btn-primary w-full"
                     >
-                        🏥 Check API Health
+                        Check API Health
                     </button>
                 </ApiCard>
             </div>
