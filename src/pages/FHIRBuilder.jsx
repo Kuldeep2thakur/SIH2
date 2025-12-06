@@ -81,10 +81,14 @@ const FHIRBuilder = () => {
         setValidationResponse(null);
 
         try {
+            // Only send exactly what the server requested
             const payload = {
-                ayushCode: formData.ayushCode,
-                ayushSystem: formData.ayushSystem,
+                ayushCode: formData.ayushCode.trim(),
+                ayushSystem: formData.ayushSystem.trim(),
+                tm2Code: formData.icdCode.trim()
             };
+
+            console.log('Sending Validation Payload:', payload);
 
             const url = 'https://symbiomed.onrender.com/fhir/validate/dual-code';
             const res = await fetch(url, {
@@ -96,10 +100,16 @@ const FHIRBuilder = () => {
             });
 
             if (!res.ok) {
-                throw new Error(`Validation Error: ${res.status} ${res.statusText}`);
+                const errorData = await res.json().catch(() => ({}));
+                console.error('Validation Error Details:', errorData);
+                const errorMessage = errorData.message ||
+                    (errorData.issue && errorData.issue[0]?.diagnostics) ||
+                    JSON.stringify(errorData);
+                throw new Error(errorMessage || `Validation Error: ${res.status} ${res.statusText}`);
             }
 
             const data = await res.json();
+            console.log('Validation Response:', data);
             setValidationResponse(data);
         } catch (err) {
             setError(err.message || 'Failed to validate dual coding');
@@ -334,13 +344,13 @@ const FHIRBuilder = () => {
                             title="Dual Coding Validation"
                             description="Validation result from the server"
                         >
-                            <div className={`p-4 rounded-xl border-2 mb-4 ${validationResponse.isValid
+                            <div className={`p-4 rounded-xl border-2 mb-4 ${(validationResponse.isValid || validationResponse.ok)
                                 ? 'bg-green-50 border-green-200'
                                 : 'bg-red-50 border-red-200'
                                 }`}>
-                                <p className={`font-semibold text-lg ${validationResponse.isValid ? 'text-green-800' : 'text-red-800'
+                                <p className={`font-semibold text-lg ${(validationResponse.isValid || validationResponse.ok) ? 'text-green-800' : 'text-red-800'
                                     }`}>
-                                    {validationResponse.isValid ? 'Valid dual coding' : 'Invalid dual coding'}
+                                    {(validationResponse.isValid || validationResponse.ok) ? 'Valid dual coding' : 'Invalid dual coding'}
                                 </p>
                             </div>
                             <pre className="code-block max-h-96 overflow-y-auto">
