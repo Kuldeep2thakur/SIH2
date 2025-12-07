@@ -12,7 +12,7 @@ const FHIRBuilder = () => {
 
     const [formData, setFormData] = useState({
         ayushCode: passedData.code || '',
-        ayushSystem: 'http://sih.gov.in/fhir/CodeSystem/namaste-ayurveda',
+        ayushSystem: passedData.system || 'http://sih.gov.in/fhir/CodeSystem/namaste-ayurveda',
         icdCode: passedData.selectedMapping?.code || '',
         icdSystem: 'http://id.who.int/icd/entity',
         icdDisplay: passedData.selectedMapping?.display || '',
@@ -321,13 +321,7 @@ const FHIRBuilder = () => {
                             </button>
                         </form>
 
-                        <div className="mt-6 p-4 bg-teal-50 rounded-lg border border-teal-200">
-                            <p className="text-sm text-teal-800 font-mono mb-1">
-                                <strong>Endpoints:</strong>
-                            </p>
-                            <p className="text-xs text-teal-700 font-mono">POST /fhir/ingest/problem-list</p>
-                            <p className="text-xs text-teal-700 font-mono">POST /fhir/validate/dual-code</p>
-                        </div>
+
                     </ApiCard>
                 </div>
 

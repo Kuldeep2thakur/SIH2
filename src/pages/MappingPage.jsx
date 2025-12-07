@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import ApiCard from '../components/ApiCard';
 import Loading from '../components/Loading';
 import ErrorMessage from '../components/ErrorMessage';
@@ -10,6 +10,19 @@ const MappingPage = () => {
 
     // Decode the URL-encoded code to handle special characters
     const code = decodeURIComponent(encodedCode);
+    const [searchParams] = useSearchParams();
+    const systemParam = searchParams.get('system');
+    // Default to Ayurveda if not provided or if literally 'undefined'
+    const system = (systemParam && systemParam !== 'undefined') ? decodeURIComponent(systemParam) : 'http://sih.gov.in/fhir/CodeSystem/namaste-ayurveda';
+
+    // Determine pretty name for display
+    const getSystemName = (sysUrl) => {
+        if (sysUrl.includes('siddha')) return 'Siddha';
+        if (sysUrl.includes('unani')) return 'Unani';
+        return 'Ayurveda';
+    };
+
+    const systemName = getSystemName(system);
 
     const [codeDetails, setCodeDetails] = useState(null);
     const [mappingData, setMappingData] = useState(null);
@@ -27,7 +40,7 @@ const MappingPage = () => {
 
         try {
             // Fetch code details using $lookup
-            const lookupUrl = `https://symbiomed.onrender.com/fhir/CodeSystem/$lookup?system=http://sih.gov.in/fhir/CodeSystem/namaste-ayurveda&code=${encodeURIComponent(code)}`;
+            const lookupUrl = `https://symbiomed.onrender.com/fhir/CodeSystem/$lookup?system=${encodeURIComponent(system)}&code=${encodeURIComponent(code)}`;
             const lookupResponse = await fetch(lookupUrl);
 
             if (!lookupResponse.ok) {
@@ -79,6 +92,7 @@ const MappingPage = () => {
         navigate('/fhir-builder', {
             state: {
                 code,
+                system,
                 codeDetails,
                 selectedMapping
             }
@@ -170,11 +184,7 @@ const MappingPage = () => {
                         </div>
                     )}
 
-                    <div className="mt-6 p-4 bg-teal-50 rounded-lg border border-teal-200">
-                        <p className="text-sm text-teal-800 font-mono">
-                            <strong>Endpoint:</strong> GET /fhir/CodeSystem/$lookup
-                        </p>
-                    </div>
+
                 </ApiCard>
 
                 {/* Mapping Card */}
@@ -326,11 +336,7 @@ const MappingPage = () => {
                         </div>
                     )}
 
-                    <div className="mt-6 p-4 bg-teal-50 rounded-lg border border-teal-200">
-                        <p className="text-sm text-teal-800 font-mono">
-                            <strong>Endpoint:</strong> GET /fhir/ConceptMap/$translate
-                        </p>
-                    </div>
+
                 </ApiCard>
             </div>
 

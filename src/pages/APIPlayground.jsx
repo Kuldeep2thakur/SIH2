@@ -262,9 +262,7 @@ const APIPlayground = () => {
                                 >
                                     {loading ? 'Loading...' : 'Lookup Code'}
                                 </button>
-                                <div className="p-3 bg-teal-50 rounded-lg border border-teal-200 text-xs font-mono text-teal-800">
-                                    GET /fhir/CodeSystem/$lookup
-                                </div>
+
                             </div>
                         </ApiCard>
                     )}
@@ -300,9 +298,7 @@ const APIPlayground = () => {
                                 >
                                     {loading ? 'Loading...' : 'Translate Code'}
                                 </button>
-                                <div className="p-3 bg-teal-50 rounded-lg border border-teal-200 text-xs font-mono text-teal-800">
-                                    GET /fhir/ConceptMap/$translate
-                                </div>
+
                             </div>
                         </ApiCard>
                     )}
@@ -363,9 +359,7 @@ const APIPlayground = () => {
                                         {loading ? 'Loading...' : 'POST Request'}
                                     </button>
                                 </div>
-                                <div className="p-3 bg-teal-50 rounded-lg border border-teal-200 text-xs font-mono text-teal-800">
-                                    GET/POST /fhir/ValueSet/$validate-code
-                                </div>
+
                             </div>
                         </ApiCard>
                     )}
@@ -404,10 +398,7 @@ const APIPlayground = () => {
                                     </button>
                                 </div>
 
-                                <div className="p-3 bg-teal-50 rounded-lg border border-teal-200 text-xs font-mono text-teal-800">
-                                    GET /fhir/bundle<br />
-                                    POST /fhir/bundle/upload
-                                </div>
+
                             </div>
                         </ApiCard>
                     )}
