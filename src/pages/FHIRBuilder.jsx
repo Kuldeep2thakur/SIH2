@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useRef } from 'react';
 import ApiCard from '../components/ApiCard';
 import Loading from '../components/Loading';
 import ErrorMessage from '../components/ErrorMessage';
@@ -26,6 +27,17 @@ const FHIRBuilder = () => {
     const [error, setError] = useState(null);
     const [response, setResponse] = useState(null);
     const [validationResponse, setValidationResponse] = useState(null);
+    const responseRef = useRef(null);
+
+    // Scroll to response when it updates
+    useEffect(() => {
+        if ((response || validationResponse || error) && responseRef.current) {
+            const yOffset = -100;
+            const element = responseRef.current;
+            const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+    }, [response, validationResponse, error]);
 
     const handleChange = (e) => {
         setFormData({
@@ -320,7 +332,7 @@ const FHIRBuilder = () => {
                 </div>
 
                 {/* Response Card */}
-                <div className="space-y-6">
+                <div className="space-y-6" ref={responseRef}>
                     {error && <ErrorMessage message={error} />}
 
                     {response && (

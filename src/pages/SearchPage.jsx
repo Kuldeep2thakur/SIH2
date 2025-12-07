@@ -20,14 +20,20 @@ const SearchPage = () => {
     const searchContainerRef = useRef(null);
 
     useEffect(() => {
-        if (results.length > 0 && resultsRef.current) {
+        if (!loading && results.length > 0 && resultsRef.current) {
+            // Scroll to results with offset for header
+            const yOffset = -150;
+            const element = resultsRef.current;
+            const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+
             gsap.fromTo(
                 resultsRef.current.children,
                 { opacity: 0, y: 20 },
                 { opacity: 1, y: 0, stagger: 0.05, duration: 0.4, ease: 'power2.out' }
             );
         }
-    }, [results]);
+    }, [results, loading]);
 
     // Handle click outside to close suggestions
     useEffect(() => {
@@ -169,7 +175,7 @@ const SearchPage = () => {
                                                         setShowSuggestions(false);
                                                         handleTermClick(suggestion.code);
                                                     }}
-                                                    className="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-slate-100 last:border-0 transition-colors duration-150"
+                                                    className="px-4 py-3 hover:bg-teal-50 cursor-pointer border-b border-slate-100 last:border-0 transition-colors duration-150"
                                                 >
                                                     <div className="flex items-center justify-between">
                                                         <span className="font-medium text-slate-700">{suggestion.display}</span>
@@ -235,7 +241,7 @@ const SearchPage = () => {
                         <h2 className="text-2xl font-bold text-slate-800">
                             Found {results.length} {results.length === 1 ? 'Result' : 'Results'}
                         </h2>
-                        <span className="badge badge-blue text-base px-4 py-2">
+                        <span className="badge badge-teal text-base px-4 py-2">
                             {searchTerm}
                         </span>
                     </div>
@@ -245,14 +251,14 @@ const SearchPage = () => {
                             <div
                                 key={`${item.code}-${index}`}
                                 onClick={() => handleTermClick(item.code)}
-                                className="card p-6 cursor-pointer group hover:shadow-2xl transition-all duration-300 hover:border-blue-300"
+                                className="card p-6 cursor-pointer group hover:shadow-2xl transition-all duration-300 hover:border-teal-300"
                             >
                                 <div className="flex items-start justify-between mb-3">
-                                    <span className="badge badge-purple font-mono font-bold text-base">
+                                    <span className="badge badge-cyan font-mono font-bold text-base">
                                         {item.code}
                                     </span>
                                     <svg
-                                        className="w-5 h-5 text-slate-400 group-hover:text-blue-600 transition-colors duration-200"
+                                        className="w-5 h-5 text-slate-400 group-hover:text-teal-600 transition-colors duration-200"
                                         fill="none"
                                         stroke="currentColor"
                                         viewBox="0 0 24 24"
@@ -260,7 +266,7 @@ const SearchPage = () => {
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                     </svg>
                                 </div>
-                                <h3 className="text-lg font-semibold text-slate-800 mb-2 group-hover:text-blue-700 transition-colors duration-200">
+                                <h3 className="text-lg font-semibold text-slate-800 mb-2 group-hover:text-teal-700 transition-colors duration-200">
                                     {item.display}
                                 </h3>
                                 {item.system && (
@@ -269,7 +275,7 @@ const SearchPage = () => {
                                     </p>
                                 )}
                                 <div className="mt-4 pt-4 border-t border-slate-100">
-                                    <button className="text-blue-600 font-medium text-sm group-hover:text-blue-700 flex items-center">
+                                    <button className="text-teal-600 font-medium text-sm group-hover:text-teal-700 flex items-center">
                                         View Mapping
                                         <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -288,15 +294,15 @@ const SearchPage = () => {
                     <h3 className="text-2xl font-bold text-slate-800 mb-4">💡 How It Works</h3>
                     <div className="space-y-3 text-slate-700">
                         <p className="flex items-start">
-                            <span className="text-blue-600 font-bold mr-3 text-xl">1.</span>
+                            <span className="text-teal-600 font-bold mr-3 text-xl">1.</span>
                             <span>Enter a medical term related to Ayurveda or traditional medicine</span>
                         </p>
                         <p className="flex items-start">
-                            <span className="text-blue-600 font-bold mr-3 text-xl">2.</span>
+                            <span className="text-teal-600 font-bold mr-3 text-xl">2.</span>
                             <span>The system searches the NAMASTE terminology database</span>
                         </p>
                         <p className="flex items-start">
-                            <span className="text-blue-600 font-bold mr-3 text-xl">3.</span>
+                            <span className="text-teal-600 font-bold mr-3 text-xl">3.</span>
                             <span>Click any result to see how it maps to international medical standards (ICD-11 TM2)</span>
                         </p>
                     </div>

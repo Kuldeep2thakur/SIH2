@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import ApiCard from '../components/ApiCard';
 import Loading from '../components/Loading';
 import ErrorMessage from '../components/ErrorMessage';
@@ -23,6 +23,17 @@ const APIPlayground = () => {
 
     // Bundle Upload state
     const [bundleJson, setBundleJson] = useState('');
+    const responseRef = useRef(null);
+
+    // Scroll to response when it updates
+    useEffect(() => {
+        if ((response || error) && !loading && responseRef.current) {
+            const yOffset = -100;
+            const element = responseRef.current;
+            const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+    }, [response, error, loading]);
 
     const handleLookup = async () => {
         setLoading(true);
@@ -403,7 +414,7 @@ const APIPlayground = () => {
                 </div>
 
                 {/* Response Card */}
-                <div>
+                <div ref={responseRef}>
                     <ApiCard
                         title="API Response"
                         description="JSON response from the server"
