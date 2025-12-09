@@ -409,26 +409,7 @@ const SearchPage = () => {
                 </div>
             )}
 
-            {/* Info Section */}
-            <div className="max-w-4xl mx-auto mt-12">
-                <div className="glass-card p-8">
-                    <h3 className="text-2xl font-bold text-slate-800 mb-4">💡 How It Works</h3>
-                    <div className="space-y-3 text-slate-700">
-                        <p className="flex items-start">
-                            <span className="text-teal-600 font-bold mr-3 text-xl">1.</span>
-                            <span>Enter a medical term related to Ayurveda or traditional medicine</span>
-                        </p>
-                        <p className="flex items-start">
-                            <span className="text-teal-600 font-bold mr-3 text-xl">2.</span>
-                            <span>The system searches the NAMASTE terminology database</span>
-                        </p>
-                        <p className="flex items-start">
-                            <span className="text-teal-600 font-bold mr-3 text-xl">3.</span>
-                            <span>Click any result to see how it maps to international medical standards (ICD-11 TM2)</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
+
         </div>
     );
 };
