@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import API_BASE_URL from '../apiConfig';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
 import ApiCard from '../components/ApiCard';
@@ -18,7 +19,7 @@ const FHIRBuilder = () => {
         icdDisplay: passedData.selectedMapping?.display || '',
         clinicalStatus: 'active',
         verificationStatus: 'confirmed',
-        encounterClass: 'AMB',
+
         onsetDate: new Date().toISOString().split('T')[0],
     });
 
@@ -61,11 +62,11 @@ const FHIRBuilder = () => {
                 icdDisplay: formData.icdDisplay,
                 clinicalStatus: formData.clinicalStatus,
                 verificationStatus: formData.verificationStatus,
-                encounterClass: formData.encounterClass,
+
                 onsetDate: formData.onsetDate,
             };
 
-            const url = 'https://symbiomed.onrender.com/fhir/ingest/problem-list';
+            const url = `${API_BASE_URL}/fhir/ingest/problem-list`;
             const res = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -97,12 +98,12 @@ const FHIRBuilder = () => {
             const payload = {
                 ayushCode: formData.ayushCode.trim(),
                 ayushSystem: formData.ayushSystem.trim(),
-                tm2Code: formData.icdCode.trim()
+                tm2Code: formData.icdCode ? formData.icdCode.trim() : ""
             };
 
             console.log('Sending Validation Payload:', payload);
 
-            const url = 'https://symbiomed.onrender.com/fhir/validate/dual-code';
+            const url = `${API_BASE_URL}/fhir/validate/dual-code`;
             const res = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -256,24 +257,7 @@ const FHIRBuilder = () => {
                                 </select>
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                    Encounter Class *
-                                </label>
-                                <select
-                                    name="encounterClass"
-                                    value={formData.encounterClass}
-                                    onChange={handleChange}
-                                    required
-                                    className="input-field"
-                                >
-                                    <option value="AMB">Ambulatory</option>
-                                    <option value="EMER">Emergency</option>
-                                    <option value="IMP">Inpatient</option>
-                                    <option value="HH">Home Health</option>
-                                    <option value="VR">Virtual</option>
-                                </select>
-                            </div>
+
 
                             <div>
                                 <label className="block text-sm font-semibold text-slate-700 mb-2">

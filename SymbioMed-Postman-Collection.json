@@ -8,7 +8,7 @@
     "variable": [
         {
             "key": "baseUrl",
-            "value": "https://symbiomed.onrender.com",
+            "value": "https://symbiomedbackend.onrender.com",
             "type": "string"
         }
     ],

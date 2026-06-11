@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import API_BASE_URL from '../apiConfig';
 import { useNavigate } from 'react-router-dom';
 import { useRef } from 'react';
 import gsap from 'gsap';
@@ -70,7 +71,7 @@ const SearchPage = () => {
                 try {
                     const systemsToSearch = selectedSystem === 'All' ? SYSTEMS : SYSTEMS.filter(s => s.name === selectedSystem);
                     const promises = systemsToSearch.map(sys =>
-                        fetch(`https://symbiomed.onrender.com/fhir/ValueSet/$expand?url=${sys.url}&filter=${encodeURIComponent(searchTerm)}`)
+                        fetch(`${API_BASE_URL}/fhir/ValueSet/$expand?url=${sys.url}&filter=${encodeURIComponent(searchTerm)}`)
                             .then(res => res.ok ? res.json() : null)
                             .catch(() => null)
                     );
@@ -124,7 +125,7 @@ const SearchPage = () => {
             // Fetch from selected systems
             const systemsToSearch = selectedSystem === 'All' ? SYSTEMS : SYSTEMS.filter(s => s.name === selectedSystem);
             const promises = systemsToSearch.map(sys =>
-                fetch(`https://symbiomed.onrender.com/fhir/ValueSet/$expand?url=${sys.url}&filter=${encodeURIComponent(searchTerm)}`)
+                fetch(`${API_BASE_URL}/fhir/ValueSet/$expand?url=${sys.url}&filter=${encodeURIComponent(searchTerm)}`)
                     .then(res => res.ok ? res.json() : null)
                     .catch(err => {
                         console.error(`Failed to fetch ${sys.name}:`, err);

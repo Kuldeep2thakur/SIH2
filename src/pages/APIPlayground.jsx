@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import API_BASE_URL from '../apiConfig';
 import ApiCard from '../components/ApiCard';
 import Loading from '../components/Loading';
 import ErrorMessage from '../components/ErrorMessage';
@@ -41,7 +42,7 @@ const APIPlayground = () => {
         setResponse(null);
 
         try {
-            const url = `https://symbiomed.onrender.com/fhir/CodeSystem/$lookup?system=${encodeURIComponent(lookupSystem)}&code=${encodeURIComponent(lookupCode)}`;
+            const url = `${API_BASE_URL}/fhir/CodeSystem/$lookup?system=${encodeURIComponent(lookupSystem)}&code=${encodeURIComponent(lookupCode)}`;
             const res = await fetch(url);
 
             if (!res.ok) {
@@ -63,7 +64,7 @@ const APIPlayground = () => {
         setResponse(null);
 
         try {
-            const url = `https://symbiomed.onrender.com/fhir/ConceptMap/$translate?url=urn:conceptmap:NAMASTE_TO_ICD11_TM2_MAPPING&system=urn:namaste&target=http://id.who.int/icd/entity&code=${encodeURIComponent(translateCode)}`;
+            const url = `${API_BASE_URL}/fhir/ConceptMap/$translate?url=urn:conceptmap:NAMASTE_TO_ICD11_TM2_MAPPING&system=urn:namaste&target=http://id.who.int/icd/entity&code=${encodeURIComponent(translateCode)}`;
             const res = await fetch(url);
 
             if (!res.ok) {
@@ -85,7 +86,7 @@ const APIPlayground = () => {
         setResponse(null);
 
         try {
-            const url = `https://symbiomed.onrender.com/fhir/ValueSet/$validate-code?url=${encodeURIComponent(validateUrl)}&system=${encodeURIComponent(validateSystem)}&code=${encodeURIComponent(validateCode)}`;
+            const url = `${API_BASE_URL}/fhir/ValueSet/$validate-code?url=${encodeURIComponent(validateUrl)}&system=${encodeURIComponent(validateSystem)}&code=${encodeURIComponent(validateCode)}`;
             const res = await fetch(url);
 
             if (!res.ok) {
@@ -113,7 +114,7 @@ const APIPlayground = () => {
                 code: validateCode,
             };
 
-            const url = 'https://symbiomed.onrender.com/fhir/ValueSet/$validate-code';
+            const url = `${API_BASE_URL}/fhir/ValueSet/$validate-code`;
             const res = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -139,7 +140,7 @@ const APIPlayground = () => {
         setResponse(null);
 
         try {
-            const url = 'https://symbiomed.onrender.com/fhir/bundle';
+            const url = `${API_BASE_URL}/fhir/bundle`;
             const res = await fetch(url);
 
             if (!res.ok) {
@@ -163,7 +164,7 @@ const APIPlayground = () => {
         try {
             const payload = JSON.parse(bundleJson);
 
-            const url = 'https://symbiomed.onrender.com/fhir/bundle/upload';
+            const url = `${API_BASE_URL}/fhir/bundle/upload`;
             const res = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -449,7 +450,7 @@ const APIPlayground = () => {
                         onClick={async () => {
                             setLoading(true);
                             try {
-                                const res = await fetch('https://symbiomed.onrender.com/health');
+                                const res = await fetch(`${API_BASE_URL}/health`);
                                 const data = await res.json();
                                 setResponse(data);
                                 setError(null);

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import API_BASE_URL from '../apiConfig';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import ApiCard from '../components/ApiCard';
 import Loading from '../components/Loading';
@@ -40,7 +41,7 @@ const MappingPage = () => {
 
         try {
             // Fetch code details using $lookup
-            const lookupUrl = `https://symbiomed.onrender.com/fhir/CodeSystem/$lookup?system=${encodeURIComponent(system)}&code=${encodeURIComponent(code)}`;
+            const lookupUrl = `${API_BASE_URL}/fhir/CodeSystem/$lookup?system=${encodeURIComponent(system)}&code=${encodeURIComponent(code)}`;
             const lookupResponse = await fetch(lookupUrl);
 
             if (!lookupResponse.ok) {
@@ -51,7 +52,7 @@ const MappingPage = () => {
             setCodeDetails(lookupData);
 
             // Fetch mapping using $translate
-            const translateUrl = `https://symbiomed.onrender.com/fhir/ConceptMap/$translate?url=urn:conceptmap:NAMASTE_TO_ICD11_TM2_MAPPING&system=urn:namaste&target=http://id.who.int/icd/entity&code=${encodeURIComponent(code)}`;
+            const translateUrl = `${API_BASE_URL}/fhir/ConceptMap/$translate?url=urn:conceptmap:NAMASTE_TO_ICD11_TM2_MAPPING&system=urn:namaste&target=http://id.who.int/icd/entity&code=${encodeURIComponent(code)}`;
             const translateResponse = await fetch(translateUrl);
 
             if (!translateResponse.ok) {
